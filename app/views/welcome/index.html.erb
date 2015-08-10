@@ -1,0 +1,140 @@
+<div class="row">
+  <div class="col-xs-12 col-lg-8">
+    <div class="row">
+      <br/>
+      <div class="panel panel-primary">
+        <div class="panel-heading">List of Available Conference Rooms
+        </div>
+        <div class="panel-body">
+          <div class="col-xs-12">
+            <div class="row">
+              <label class="col-xs-6 col-lg-3">Select Date</label><input type="text" id="dateToCheck" class="date col-xs-6 col-lg-3"></input>
+            </div>
+            <br/>
+            <% @rooms.each_with_index do |r| %>
+              <button id="<%=r.id%>" name="<%= r.name%>" class="btn btn-large btn-primary meetingBtn" data-toggle="modal" data-target="#checkRoomStatus" onclick="CheckStatus(this.id, this.name)" disabled><%= r.name %>
+              </button>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <br/>
+      <div class="panel panel-primary">
+        <div class="panel-heading">Book a Conference Room
+        </div>
+        <div class="panel-body">
+          <%= form_tag("/bookings", method: "post", id: "bookingCreate") do %>
+            <div class="col-xs-12 col-lg-4">
+              <label class="col-xs-12" id='datelabel'><b>Selected Date : </b></label>
+              <label class="col-xs-12" id='roomlabel'><b>Selected Room : </b></label>
+            </div>
+            <div class="col-xs-12 col-lg-8">
+              <div class="row">
+                <input type="hidden" id="dateToBook" name="date" class="date col-xs-2"></input>
+                <input type="hidden" id="room" name="room" class="date col-xs-2"></input>
+              </div>
+              <div class="row">
+                <label class="col-xs-3">Select Start Time</label>
+                <div class="bfh-timepicker col-xs-3" data-name="startTime" data-align="left" data-input="startT"></div>
+              </div>
+              <div class="row">
+                <label class="col-xs-3">Select End Time</label>
+                <div class="bfh-timepicker col-xs-3" data-name="endTime" data-align="left" data-input="endT"></div>
+              </div>
+            </div>
+            <div class="col-xs-12 col-lg-8 pull-right">
+              <%= submit_tag "Book", class: "btn btn-primary pull-right", disabled: "disabled", id:"saveBooking" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-lg-3 pull-right">
+    <div class="row">
+      <br/>
+      <div class="panel panel-primary">
+        <div class="panel-heading">List of Holidays
+        </div>
+        <div class="panel-body">
+          <div class="col-xs-12">
+            <% @holidays.each do |h|%>
+              <div class="row"><b><%= h.date.strftime("%b, %d, %Y")  %></b></div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="checkRoomStatus" tabindex="-1" role="dialogs" aria-labelledby="myModalLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Check Booking Status of Room</h4>
+      </div>
+      <div class="modal-body" id="roomStatus">
+        
+      </div>
+      <br/>
+    </div>
+  </div>
+</div>
+<script>
+
+  $(document).ready(function(){
+    $("#dateToCheck").bind("change paste keyup", function() {
+      $(".meetingBtn").attr("disabled",false);
+      $("#dateToBook").val($("#dateToCheck").val());
+      $("#datelabel").html("Selected Date : "+$("#dateToCheck").val());
+    });
+    $('#bookingCreate').submit(function(e) {
+      if ($(".endT").val() < $(".startT").val()){
+        alert("End Date cannot be less than the Start Date");
+        return false;
+      };
+    });
+    
+  });
+
+  $(".date").datepicker({
+    beforeShowDay: $.datepicker.noWeekends,
+    minDate: 0,
+    dateFormat: 'yy-mm-dd'
+  });
+
+  function CheckStatus(id,name){
+    $("#room").val(id);
+    $("#roomlabel").html("Selected Room : "+name);
+    var date = $("#dateToCheck").val();
+    $.ajax({
+    url: "/welcome/fetchBookings",
+      dataType: 'json',
+      data: {date: date, room_id: id},
+      success: function(data, textStatus, jqXHR) {
+        $(".modal-title").html("Check Booking Status of Room : "+data.room)
+        if (data.type == "Holiday") {
+          $("#roomStatus").html("<div class='row text-center'><b>Its a Holiday</b></div>");
+          $("#saveBooking").attr("disabled",true);
+        }
+        else{
+          var html = "";
+          if (data.data_object.length == 0){
+            html = "No Meeting has been scheduled on this day for the Meeting Room!"
+          }else{
+            html = "<table class='table table-condensed table-bordered'><thead><th>User</th><th>Date</th><th>Start Time</th><th>End Time</th></thead>";
+            $.each(data.data_object, function( index, value ) {
+              html += "<tbody><tr><td>"+value.user+"</td><td>"+value.date+"</td><td>"+value.start_time+"</td><td>"+value.end_time+"</td></tr>"
+            });
+            html += "</tbody></table>"
+          }
+          $("#roomStatus").html(html);
+          $("#saveBooking").attr("disabled",false);
+        }
+      }
+    });
+  };
+</script>
