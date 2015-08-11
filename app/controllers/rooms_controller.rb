@@ -3,7 +3,6 @@ class RoomsController < ApplicationController
     @room = Room.new
     @room.name = params["name"]
     @room.is_enabled = params["is_enabled"]
-
     respond_to do |format|
       if @room.valid?
         if @room.save

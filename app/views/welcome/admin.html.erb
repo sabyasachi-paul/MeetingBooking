@@ -135,9 +135,9 @@
   };
   function editRoom(id,name,enabled){
     $(".modal-title").html("Edit Meeting Room");
-    $("#addOrEditHoliday").attr("method","GET").attr('action', "/rooms/edit");
+    $("#addOrEdit").attr("method","GET").attr('action', "/rooms/edit");
     $(".idSettter").remove();
-    $("#addOrEditHoliday").append("<input class='idSettter' type='hidden' name='id' value='"+id+"'/>");
+    $("#addOrEdit").append("<input class='idSettter' type='hidden' name='id' value='"+id+"'/>");
     $("#name").val(name);
     if (enabled == false){
       $("#is_enabled").click();
