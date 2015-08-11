@@ -14,6 +14,8 @@ Room.create(name: "Meeting-Room-3")
 u = User.new
 u.email = "admin@admin.com"
 u.password = "admin123"
+u.first_name = "Admin"
+u.last_name = "User"
 u.password_confirmation = "admin123"
 r = Role.find_by_name("admin")
 u.role = r

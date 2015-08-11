@@ -16,7 +16,7 @@ class WelcomeController < ApplicationController
       x = []
       bookings.each do |b|
         u = User.find(b.user)
-        x.push({:user=>u.email, :date=> b.start.strftime("%Y-%m-%d"), :start_time=>b.start.strftime("%H:%M:%S"), :end_time=>b.end.strftime("%H:%M:%S")})
+        x.push({:user=>u.fullname, :date=> b.start.strftime("%Y-%m-%d"), :start_time=>b.start.strftime("%H:%M:%S"), :end_time=>b.end.strftime("%H:%M:%S")})
       end
       json_data = {:type=> "Booking", :room=> room.name, :data_object=>x}
     end
