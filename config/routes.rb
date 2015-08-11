@@ -9,7 +9,7 @@ Rails.application.routes.draw do
    get 'welcome/admin'
    get 'welcome/fetchBookings'
    
-   devise_for :users, controllers: { sessions: "users/sessions" }
+   devise_for :users, controllers: { sessions: "users/sessions", registrations: 'users/registrations' }
    resource :rooms
    resource :holidays
    resource :bookings

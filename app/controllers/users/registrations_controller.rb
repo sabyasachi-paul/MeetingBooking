@@ -2,20 +2,14 @@ class Users::RegistrationsController < Devise::RegistrationsController
 # before_filter :configure_sign_up_params, only: [:create]
 # before_filter :configure_account_update_params, only: [:update]
 
-  before_filter :configure_permitted_parameters
-
-  protected
-
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) do |u|
-      u.permit(:first_name, :last_name,
-        :email, :password, :password_confirmation)
-    end
-    devise_parameter_sanitizer.for(:account_update) do |u|
-      u.permit(:first_name, :last_name,
-        :email, :password, :password_confirmation, :current_password)
-    end
+  def sign_up_params
+    params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation)
   end
+
+  def account_update_params
+    params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :current_password)
+  end
+
   # GET /resource/sign_up
   # def new
   #   super
@@ -24,19 +18,12 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # POST /resource
   def create
     super
-    super do |resource|
-      resource.first_name = params["first_name"]
-      resource.last_name = params["last_name"]
-      role = Role.find_by_name("default")
-      resource.role= role
-      resource.save!
-    end
   end
 
   # GET /resource/edit
-  def edit
-    super
-  end
+  # def edit
+  #   super
+  # end
 
   # PUT /resource
   # def update
