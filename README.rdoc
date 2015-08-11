@@ -1,28 +1,20 @@
-== README
-
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Steps:
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+1> Please fork the Github project.
+2> Run Bundle Install
+3> run rake db:migrate
+4> run rake db:seed
+5> run rails s
+
+
+I have made the basic structure of the Site. 
+
+I have added a Admin role user and have seeded the same. 
+Use email : admin@admin.com
+password : admin123
+
+Adding conference rooms and Holidays is a feature available only to Admin.
+Other users are abel to book conference rooms, check status of a conference room, check the list of holidays and the available conference rooms.
+
+Please email me at spcslg@gmail.com for any clarifications.
